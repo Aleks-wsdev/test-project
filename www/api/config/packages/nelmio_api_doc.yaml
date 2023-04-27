@@ -1,0 +1,12 @@
+nelmio_api_doc:
+    use_validation_groups: true
+    documentation:
+        servers:
+            - url: '%env(APP_URL)%'
+              description: API over HTTP on local Symfony server
+        info:
+            title: Symfony API
+    areas:
+        path_patterns:
+            - ^/api/v1
+               

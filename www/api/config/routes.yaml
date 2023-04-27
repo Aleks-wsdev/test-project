@@ -1,0 +1,13 @@
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
+
+
+root:
+    path: /
+    defaults:
+        _controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController::urlRedirectAction
+        path: /api/doc
+        permanent: true

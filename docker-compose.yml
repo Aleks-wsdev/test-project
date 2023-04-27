@@ -1,0 +1,101 @@
+version: '3'
+services:
+    php-fpm:
+      build:
+        context: ./images/php81
+        args:
+          - USER_ID
+          - GROUP_ID
+      volumes:
+        - ./www:/var/www
+      networks:
+        - test-network
+
+# ***********php81-cli**********
+
+    php81-cli:
+      build:
+        context: ./images/phpcli81
+        args:
+          - USER_ID
+          - GROUP_ID
+      volumes:
+        - ./www:/var/www
+      networks:
+        - test-network
+
+# ***********nginx**********
+    nginx-test:
+      image: nginx
+      volumes:
+        - ./hosts:/etc/nginx/conf.d
+        - ./www:/var/www
+        - ./logs:/var/log/nginx
+      ports:
+        - "80:80"
+      depends_on:
+        - php-fpm
+      networks:
+        test-network:
+          aliases: 
+            - api.loc
+            - cli.loc
+
+# ****************mysql**********************
+    mysql:
+      image: mysql:5.7
+      ports:
+        - "3306:3306"
+      volumes:
+        - ./mysql/data:/var/lib/mysql
+      environment:
+        MYSQL_ROOT_PASSWORD: root
+        MYSQL_DATABASE: default
+        MYSQL_USER: default
+        MYSQL_PASSWORD: secret
+      networks:
+        - test-network
+
+# **************phpmyadmin**************************
+
+    phpmyadmin:
+      image: phpmyadmin/phpmyadmin
+      restart: always
+      ports:
+          - ${PMA_PORT}:80
+      links:
+          - nginx-test
+          - mysql
+      environment:
+        - PMA_ARBITRARY=1
+        - MYSQL_USER=${PMA_USER}
+        - MYSQL_PASSWORD=${PMA_PASSWORD}
+        - MYSQL_ROOT_PASSWORD=${PMA_ROOT_PASSWORD}
+        - MAX_EXECUTION_TIME=${PMA_MAX_EXECUTION_TIME}
+        - MEMORY_LIMIT=${PMA_MEMORY_LIMIT}
+        - UPLOAD_LIMIT=${PMA_UPLOAD_LIMIT}
+      networks:
+        - test-network
+
+# ****************portainer************************
+    portainer:
+      image: portainer/portainer-ce:latest
+      command: -H unix:///var/run/docker.sock
+      restart: always
+      ports:
+        - 9010:9000
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+        - portainer_data:/data
+
+# ****************************************************
+volumes:
+  portainer_data: 
+
+networks:
+  test-network:
+    driver: bridge
+    # ipam:
+    #   driver: default
+      # config:
+      #   - subnet: 192.168.220.0/28

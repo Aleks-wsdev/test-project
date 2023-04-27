@@ -1,0 +1,33 @@
+{
+    "name": "alex/symfony-api-client",
+    "description": "CLI client based on Symfony console skeleton .",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "alex",
+            "email": "oleksandr.k.dev@gmail.com"
+        }
+    ],
+    "require": {
+        "ext-curl": "*",
+        "php": ">=8.1",
+        "symfony/console": "^6.2.5",
+        "guzzlehttp/guzzle": "^7.5.0",
+        "symfony/dotenv": "^6.2.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Console\\": "src/"
+        }
+    },
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require-dev": {
+        "symplify/easy-coding-standard": "^11.3"
+    }
+}
