@@ -1,9 +1,9 @@
 
-docker-compose build
+docker compose build
 
-docker-compose up -d
+docker compose up -d
 
-make bash or docker-compose exec  --workdir=/var/www php81-cli bash
+make bash or docker compose exec  --workdir=/var/www php81-cli bash
 
 cd api
 

@@ -1,0 +1,16 @@
+version: '3.9'
+services:
+    php81-fpm:
+      build:
+        context: ./images/php81
+        args:
+          - USER_ID=${USER_ID}
+          - GROUP_ID=${GROUP_ID}
+          - INSTALL_XDEBUG=${PHP_FPM_INSTALL_XDEBUG}
+      volumes:
+        - ./www:/var/www
+        - ./images/php81/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      extra_hosts:
+        - "host.docker.internal:host-gateway"
+      networks:
+        - test-network

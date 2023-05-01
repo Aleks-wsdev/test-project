@@ -1,15 +1,18 @@
-version: '3'
+version: '3.9'
 services:
-    php-fpm:
-      build:
-        context: ./images/php81
-        args:
-          - USER_ID
-          - GROUP_ID
-      volumes:
-        - ./www:/var/www
-      networks:
-        - test-network
+    php81-fpm-api:
+      extends:
+        file: php81-fpm.yml
+        service: php81-fpm
+      environment:
+        XDEBUG_CONFIG: "client_port=9005"  
+
+    php81-fpm-cli:
+      extends:
+        file: php81-fpm.yml
+        service: php81-fpm
+      environment:
+        XDEBUG_CONFIG: "client_port=9008" 
 
 # ***********php81-cli**********
 
@@ -34,7 +37,8 @@ services:
       ports:
         - "80:80"
       depends_on:
-        - php-fpm
+        - php81-fpm-api
+        - php81-fpm-cli
       networks:
         test-network:
           aliases: 
@@ -44,8 +48,8 @@ services:
 # ****************mysql**********************
     mysql:
       image: mysql:5.7
-      ports:
-        - "3306:3306"
+      # ports:
+      #   - "3306:3306"
       volumes:
         - ./mysql/data:/var/lib/mysql
       environment:
